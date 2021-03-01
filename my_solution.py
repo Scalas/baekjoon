@@ -39,7 +39,7 @@ def sol11047():
         if(k==0):
             break
         answer += k//coin
-        k%=coin
+        k %= coin
     print(answer)
 
 # 1931 회의실 배정
