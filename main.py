@@ -1,2 +1,2 @@
-import my_solution
-my_solution.sol4796()
+import my_grid_solution
+my_grid_solution.sol1700()
