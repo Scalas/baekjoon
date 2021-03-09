@@ -1,4 +1,5 @@
 import sys
+import math
 input = sys.stdin.readline
 
 ''' 알고리즘 카테고리 : 구현 '''
@@ -104,3 +105,103 @@ def sol2443():
     for i in range(n):
         result.append(' '*i+'*'*(2*(n-i)-1))
     print('\n'.join(result))
+
+# 2475 검증수
+def sol2475():
+    sum = 0
+    for num in map(int, input().split()):
+        sum+=(num**2)
+    print(sum%10)
+
+# 1475 방 번호
+def sol1475():
+    num = int(input())
+    if(num == 0):
+        print(1)
+        return
+    count = [0]*10
+    while(num>0):
+        count[num%10] += 1
+        num //= 10
+    count[6] = int(math.ceil((count[6]+count[9])/2))
+    count[9] = 0
+    print(max(count))
+
+# 2490 윷놀이
+def sol2490():
+    res = ['E', 'A', 'B', 'C', 'D']
+    answer = []
+    for _ in range(3):
+        back = list(map(int, input().split())).count(0)
+        answer.append(res[back])
+    print('\n'.join(answer))
+
+# 11050 이항계수
+def sol11050():
+    n, k = map(int, input().split())
+    top, bot = 1, 1
+    for num in range(1, k+1):
+        top *= (n-num+1)
+        bot *= num
+    print(top//bot)
+
+# 2455 지능형 기차
+def sol2455():
+    nums = []
+    for i in range(4):
+        pout, pin = map(int, input().split())
+        num = pin-pout
+        if(i>0):
+            num += nums[i-1]
+        nums.append(num)
+    print(max(nums))
+
+# 1476 날짜 계산
+def sol1476():
+    e, s, m = map(int, input().split())
+    if(e==15):
+        e = 0
+    if(s==28):
+        s = 0
+    if(m==19):
+        m = 0
+    answer = s
+    while True:
+        if(answer%15==e and answer%28==s and answer%19==m):
+            break
+        answer += 28
+    print(answer)
+
+# 3009 네 번째 점
+def sol3009():
+    xval = []
+    yval = []
+    for _ in range(3):
+        x, y = map(int, input().split())
+        if x in xval:
+            xval.remove(x)
+        else:
+            xval.append(x)
+        if y in yval:
+            yval.remove(y)
+        else:
+            yval.append(y)
+    print(xval[0], yval[0])
+
+# 3046 R2
+def sol3046():
+    r1, s = map(int, input().split())
+    print(2*s-r1)
+
+# 10808 알파벳 개수
+def sol10808():
+    s = input().rstrip()
+    answer = [0 for _ in range(26)]
+    for c in s:
+        answer[ord(c)-ord('a')] += 1
+    print(' '.join(map(str, answer)))
+
+# 2743 단어 길이재기
+def sol2743():
+    print(len(input().rstrip()))
+
