@@ -205,3 +205,98 @@ def sol10808():
 def sol2743():
     print(len(input().rstrip()))
 
+# 14503 로봇청소기
+def sol14503():
+    n, m = map(int, input().split())
+    r, c, d = map(int, input().split())
+    floor = [list(map(int, input().split())) for _ in range(n)]
+    direction = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    answer = 0
+    while True:
+        # 현재위치를 청소
+        if(floor[r][c] == 0):
+            floor[r][c] = 2
+            answer += 1
+        
+        # 왼쪽부터 네 방향을 탐색
+        sc = 0
+        while(sc<4):
+            tr = r+direction[d-1][0]
+            tc = c+direction[d-1][1]
+            # 왼쪽방향에 청소할 공간이 없다면
+            if(floor[tr][tc]==1 or floor[tr][tc] == 2):
+                sc += 1
+                d -= 1
+                if(d==-1):
+                    d = 3
+                continue
+                
+            # 왼쪽방향에 청소할 공간이 있다면
+            r = tr
+            c = tc
+            d -= 1
+            if(d==-1):
+                d = 3
+            break
+            
+        # 사방에 청소할 공간이 없을 경우
+        if(sc==4):
+            tr = r-direction[d][0]
+            tc = c-direction[d][1]
+            # 후진할 공간이 없다면 작동정지
+            if(floor[tr][tc]==1):
+                break
+            
+            # 후진할 수 있다면 방향을 유지하고 후진
+            r = tr
+            c = tc
+            continue
+    print(answer)
+
+# 10996 별찍기21
+def sol10996():
+    n = int(input())
+    res = []
+    for i in range(n*2):
+        for j in range(n):
+            if((i%2==0 and j%2==0) or (i%2!=0 and j%2!=0)):
+                res.append('*')
+            else:
+                res.append(' ')
+        res.append('\n')
+    print(''.join(res))
+
+# 2108 통계학
+def sol2108():
+    n = int(input())
+    nums = [0]*8001
+    sum_val, med, min_val, max_val, mode = 0, 0, 4001, -4001, 0
+    answer = []
+    for i in range(n):
+        num = int(input())
+        nums[num+4000] += 1
+        sum_val += num
+    answer.append(str(round(sum_val/n)))
+
+    idx = 0
+    max_count = max(nums)
+    mode_count = 0
+    for i in range(8001):
+        if(nums[i]==0):
+            continue
+        if(idx==0):
+            min_val = i-4000
+        max_val = i-4000
+        if(nums[i]==max_count and mode_count<2):
+            mode = i-4000
+            mode_count += 1
+        while(nums[i]>0):
+            nums[i] -= 1
+            idx += 1
+            if(idx == (n+1)//2):
+                med = i-4000
+
+    answer.append(str(med))
+    answer.append(str(mode))
+    answer.append(str(max_val-min_val))
+    print('\n'.join(answer))
