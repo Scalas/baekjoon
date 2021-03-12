@@ -300,3 +300,110 @@ def sol2108():
     answer.append(str(mode))
     answer.append(str(max_val-min_val))
     print('\n'.join(answer))
+
+# 2522 별찍기12
+def sol2522():
+    n = int(input())
+    answer = []
+    for i in range(-n+1, n):
+        answer.append(' '*abs(i)+'*'*(n-abs(i)))
+    print('\n'.join(answer))
+
+# 3190 뱀
+from collections import deque
+def solution():
+    n = int(input())
+    k = int(input())
+    apple = [tuple(map(int, input().split())) for _ in range(k)]
+    l = int(input())
+    cmd = []
+    for _ in range(l):
+        inp = input().split()
+        cmd.append((int(inp[0]), inp[1]))
+    direction = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    
+    time = 0
+    snake = deque([(1, 1)])
+    d = 1
+    ridx = 0
+    while True:
+        time += 1
+        # 몸길이를 늘려 머리를 다음칸에 위치
+        new_head = (snake[-1][0]+direction[d][0], snake[-1][1]+direction[d][1])
+        
+        # 다음 머리가 이동할 칸이 벽이거나 자신의 몸이 위치한 곳일 경우 종료
+        if not(1<=new_head[0]<=n and 1<=new_head[1]<=n) or (new_head in snake):
+            break
+            
+        # 이동할 수 있다면 머리를 다음칸에 위치
+        snake.append(new_head)
+        
+        # 사과가 있다면 사과를 먹고 몸길이가 그대로
+        if(new_head in apple):
+            apple.remove(new_head)
+        # 사과가 없다면 꼬리를 없앤다
+        else:
+            snake.popleft()
+        
+        # 방향전환
+        if(ridx<l and time == cmd[ridx][0]):
+            if(cmd[ridx][1]=='D'):
+                d += 1
+                if(d==4):
+                    d = 0
+            else:
+                d -= 1
+                if(d==-1):
+                    d = 3
+            ridx += 1
+    print(time)
+
+# 1100 하얀칸
+def sol1100():
+    board = [input().rstrip() for _ in range(8)]
+    answer = 0
+    for i in range(8):
+        for j in range(8):
+            if(board[i][j]=='F'):
+                if(i%2==0 and j%2==0) or (i%2!=0 and j%2!=0):
+                    answer+=1
+    print(answer)
+
+# 1009 분산처리
+def sol1009():
+    t = int(input())
+    answers = []
+    for i in range(t):
+        a, b = map(int, input().split())
+        answer = (power(a, b))
+        if(answer == 0):
+            answer = 10
+        answers.append(str(answer))
+    print('\n'.join(answers))
+def power(a, b):
+    if(b==0):
+        return 1
+    res = (power(a, b//2)**2)%10
+    if(b%2!=0):
+        res *= a
+        res %= 10
+    return res%10
+
+# 1009 분산처리 다른풀이
+def sol1009_2():
+    t = int(input())
+    answers = []
+    for i in range(t):
+        a, b = map(int, input().split())
+        a %= 10
+        b = b%4+4
+        answer = a**b
+        if(answer == 10):
+            answer = 10
+        answers.append(str(answer))
+    print('\n'.join(answers))
+
+# 10797 10부제
+def sol10797():
+    day = input().rstrip()
+    print(input().rstrip().count(day))
