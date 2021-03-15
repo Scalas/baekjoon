@@ -407,3 +407,54 @@ def sol1009_2():
 def sol10797():
     day = input().rstrip()
     print(input().rstrip().count(day))
+
+# 14499 주사위 굴리기
+def sol14499():
+    n, m, x, y, k = map(int, input().split())
+    board = [list(map(int, input().split())) for _ in range(n)]
+    cmd_list = list(map(int, input().split()))
+    dice = {'top':0, 'bottom':0, 'front':0, 'back':0, 'left':0, 'right':0}
+    d = [(0, 1), (0, -1), (-1, 0), (1, 0)]
+    answer = []
+    for cmd in cmd_list:
+        nx, ny = x+d[cmd-1][0], y+d[cmd-1][1]
+        if not(0<=nx<n and 0<=ny<m):
+            continue
+        x, y = nx, ny
+        if(cmd==1):
+            dice['bottom'], dice['left'], dice['top'], dice['right'] = dice['right'], dice['bottom'], dice['left'], dice['top']
+        elif(cmd==2):
+            dice['bottom'], dice['left'], dice['top'], dice['right'] = dice['left'], dice['top'], dice['right'], dice['bottom']
+        elif(cmd==3):
+            dice['bottom'], dice['front'], dice['top'], dice['back'] = dice['front'], dice['top'], dice['back'], dice['bottom']
+        elif(cmd==4):
+            dice['bottom'], dice['front'], dice['top'], dice['back'] = dice['back'], dice['bottom'], dice['front'], dice['top']
+        if(board[x][y]==0):
+            board[x][y] = dice['bottom']
+        else:
+            dice['bottom'] = board[nx][ny]
+            board[x][y] = 0
+        answer.append(str(dice['top']))
+    print('\n'.join(answer))
+
+# 1032 명령프롬프트
+def sol1032():
+    n = int(input())
+    files = [input().rstrip() for _ in range(n)]
+    answer = list(files[0])
+    name_len = len(files[0])
+    for file in files[1:]:
+        for i in range(name_len):
+            if(answer[i] != file[i]):
+                answer[i] = '?'
+    print(''.join(answer))
+
+# 5338 마이크로소프트 로고
+def sol5338():
+    res = []
+    res.append('       _.-;;-._')
+    res.append('\'-..-\'|   ||   |')
+    res.append('\'-..-\'|_.-;;-._|')
+    res.append('\'-..-\'|   ||   |')
+    res.append('\'-..-\'|_.-\'\'-._|')
+    print('\n'.join(res))
