@@ -86,3 +86,64 @@ def sol10825_2():
     datas.sort()
     for data in datas:
         out(data[-1]+'\n')
+
+
+#11656 접미사배열
+def sol11656():
+    s = input().rstrip()
+    print('\n'.join(sorted([s[i:] for i in range(len(s))])))
+
+
+#11728 배열합치기
+def sol11728():
+    n, m = map(int, sys.stdin.readline().split())
+    arr = sorted(list(map(int, sys.stdin.read().split())))
+    print(' '.join(map(str, arr)))
+
+
+#5052 전화번호 목록
+def sol5052():
+    t = int(input())
+    for _ in range(t):
+        n = int(input())
+        pns = sorted([input().rstrip() for _ in range(n)])
+        
+        res = True
+        for i in range(n-1):
+            if(pns[i+1].startswith(pns[i])):
+                res = False
+                break
+        if(res):
+            print('YES')
+        else:
+            print('NO')
+
+
+#2822 점수계산
+def sol2822():
+    res = sorted([(int(input()), i+1) for i in range(8)])[-5:]
+    
+    total = 0
+    pnum = []
+    for r in res:
+        total += r[0]
+        pnum.append(r[1])
+    pnum.sort()
+    
+    print(total)
+    print(' '.join(map(str, pnum)))
+
+
+#11652 카드
+def sol11652():
+    n = int(input())
+    cards = {}
+    for _ in range(n):
+        num = int(input())
+        try:
+            cards[num] += 1
+        except:
+            cards[num] = 1
+    counts = sorted(list(zip(cards.keys(), cards.values())), key=lambda x:(-x[1], x[0]))
+    print(counts[0][0])
+
