@@ -147,3 +147,97 @@ def sol11652():
     counts = sorted(list(zip(cards.keys(), cards.values())), key=lambda x:(-x[1], x[0]))
     print(counts[0][0])
 
+
+#7453 합이 0인 네 정수
+# 나중에 다시풀어볼것
+# 첫 풀이는 결국 힌트를 보고 dictionary를 활용하여 풀음
+# 실행 시간은 상위권 풀이의 두배가량
+# 네 수의 합을 두 수의 합끼리의 합으로 보고
+# 두 수의 합이 서로 부호만 다른 경우의 수를
+# 찾는 방향으로 접근해야함
+def sol7453():
+    n = int(input())
+    A = []
+    B = []
+    C = []
+    D = []
+    sum_ab = []
+    sum_cd = {}
+    for _ in range(n):
+        a, b, c, d = map(int, input().split())
+        A.append(a)
+        B.append(b)
+        C.append(c)
+        D.append(d)
+    
+    for i in range(n):
+        for j in range(n):
+            sum_ab.append(A[i]+B[j])
+            try:
+                sum_cd[C[i]+D[j]] += 1
+            except:
+                sum_cd[C[i]+D[j]] = 1
+    
+    answer = 0
+    for ab in sum_ab:
+        try:
+            cd_count = sum_cd[-ab]
+            answer += cd_count
+        except:
+            continue
+    print(answer)
+
+
+# 가장 좋은 풀이는 두 수의 합을 각각 오름차순, 내림차순 정렬하여
+# 두 수의 합이 0보다 크면 내림차순 정렬한 합 배열의 다음 요소를
+# 두 수의 합이 0보다 작으면 오름차순 정렬한 합배열의 다음 요소를 참조하여
+# 0인 조합을 찾을경우 
+# 그 조합과 같은 순서쌍을 모두 찾아 그 수를 합산하는 방식이다.
+
+
+#1302 베스트셀러
+# 딕셔너리에 책이름을 key로, 팔린 수를 value로 저장 후 
+# 키/값 쌍을 값기준 내림차순, 값이 같을경우 키(이름)기준 오름차순 정렬하여 첫번째 요소의 책이름을 출력
+def sol1302():
+    n = int(input())
+    sold = {}
+    for _ in range(n):
+        book = input().rstrip()
+        try:
+            sold[book] += 1
+        except:
+            sold[book] = 1
+    
+    rank = sorted(list(sold.items()), key=lambda x:(-x[1], x[0]))
+    print(rank[0][0])
+
+
+#8979 올림픽
+def sol8979():
+    n, k = map(int, input().split())
+
+    # 국가의 메달 정보를 국가번호:메달정보 쌍으로 저장
+    nations = {}
+    for _ in range(n):
+        nation = tuple(map(int, input().split()))
+        nations[nation[0]] = nation[1:]
+
+    # 메달 정보를 기준에따라 정렬
+    rank = sorted(nations.values(), key=lambda x: (-x[0], -x[1], -x[2]))
+    
+    # 해당 국가보다 성적이 좋은 국가의 수 + 1이므로 초기값은 1
+    # 등수를 구하려는 국가와 같은 성적이 나오기 전까지 등수 +1
+    answer = 1
+    for r in rank:
+        if(r==nations[k]):
+            break
+        answer += 1
+
+    print(answer)
+
+
+#10867 중복빼고 정렬하기
+# 입력받은 데이터를 집합으로 변환한 뒤 다시 리스트로 변환하여 정렬
+def sol10867():
+    input()
+    print(*sorted(list(set(map(int, input().split())))))
