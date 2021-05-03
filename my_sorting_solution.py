@@ -1,4 +1,6 @@
 import sys
+import heapq
+from collections import deque
 
 input = sys.stdin.readline
 out = sys.stdout.write
@@ -241,3 +243,101 @@ def sol8979():
 def sol10867():
     input()
     print(*sorted(list(set(map(int, input().split())))))
+
+
+#2075 n번째 큰수
+def sol2075():
+    n = int(input())
+    nums = []
+    for i in range(n):
+        for num in map(int, input().split()):
+            if(len(nums)<n):
+                heapq.heappush(nums, -num)
+            elif(nums[-1]>-num):
+                heapq.heappop(nums)
+                heapq.heappush(nums, -num)
+            print(nums)
+                
+    print(-nums[0])
+
+
+
+# 못푼문제
+# 2887 행성터널 - 최소비용신장트리
+# 1517 버블소트 - 머지정렬을 활용한 inversion count
+
+
+#11557 Yangjojang of The Year
+def sol11557():
+    t = int(input())
+    answers = []
+    for _ in range(t):
+        n = int(input())
+        s = [input().split() for _ in range(n)]
+        s.sort(key=lambda x:int(x[1]))
+        answers.append(s[-1][0])
+    print('\n'.join(answers))
+
+
+#18870 좌표 압축
+def sol18870():
+    n = int(input())
+    p = list(map(int, input().split()))
+    s = sorted(list(set(p)))
+    
+    z = {}
+    for i, num in enumerate(s):
+        z[num] = i
+    
+    out(' '.join(map(str, [z[num] for num in p])))
+
+
+#5576 콘테스트
+def sol5576():
+    w = sum(sorted([int(input()) for _ in range(10)])[-3:])
+    k = sum(sorted([int(input()) for _ in range(10)])[-3:]) 
+    out(' '.join(map(str, (w, k))))
+
+
+#1015 수열 정렬
+def sol1015():
+    n = int(input())
+    a = list(map(int, input().split()))
+    
+    p = {}
+    for i, num in enumerate(sorted(a)):
+        if(p.get(num)==None):
+            p[num] = deque([i])
+        else:
+            p[num].append(i)
+        
+    answer = []
+    for num in a:
+        answer.append(p[num].popleft())
+        
+    print(' '.join(map(str, answer)))
+
+
+#11931 수 정렬하기4
+def sol11931():
+    n = int(input())
+    out('\n'.join(map(str, sorted([int(input()) for _ in range(n)], reverse=True))))
+
+
+#2693 n번째 큰 수
+def sol2693():
+    case = [list(map(int, input().split())) for _ in range(int(input()))]
+    print('\n'.join(map(str, [sorted(c)[-3] for c in case])))
+
+
+#1431 시리얼 번호
+def ds(str):
+    return sum([int(c) for c in str if c.isdigit()])
+            
+
+def sol1431():
+    sn = [input().rstrip() for _ in range(int(input()))]
+    sn.sort(key= lambda x:(len(x), ds(x), x))
+    print('\n'.join(sn))
+
+
