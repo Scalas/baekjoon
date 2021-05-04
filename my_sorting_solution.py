@@ -341,3 +341,107 @@ def sol1431():
     print('\n'.join(sn))
 
 
+#11000 강의실배정
+# 강의를 시작시간 순으로
+# 시작시간이 같으면 종료시간 순으로 오름차순 정렬
+# 빈 강의실이 없을 때 시작되는 수업의 갯수를 찾는다
+def sol11000():
+    n = int(input())
+    l = [list(map(int, input().split())) for _ in range(n)]
+    l.sort()
+    
+    # 처음엔 강의종료시간 el을 전부 탐색해서 시간초과
+    # heapq를 사용해서 가장 빨리 강의가 끝나는 강의실 탐색
+    answer = 0
+    el = []
+    for s, t in l:
+        # 시작전에 비는 강의실이 없는경우 강의실+1
+        if(not el or el[0]>s):
+            answer += 1
+            heapq.heappush(el, t)
+
+        # 있을경우 가장 빨리 비는 강의실에서 강의시작
+        else:
+            heapq.heappop(el)
+            heapq.heappush(el, t)
+
+    out(str(answer))
+
+
+#2776 암기왕
+def sol2776():
+    for _ in range(int(input())):
+        input()
+        nums = set(map(int, input().split()))
+        input()
+        q = list(map(int, input().split()))
+        out('\n'.join([('1' if num in nums else '0') for num in q])+'\n')
+
+
+#3273 두 수의 합
+# 정렬 후 작은 수부터 x의 보수가 존재하는지 확인
+# x의 보수가 자신보다 큰 수라면 answer += 1
+# 그렇지 않다면 break
+
+# 여기서는 보수의 존재를 확인하기 위해 set을 사용
+# 수의 범위가 1에서 100만 사이로 크지 않기때문에
+# 카운팅 정렬도 사용 가능
+def sol3273():
+    input()
+    arr = list(map(int, input().split()))
+    x = int(input())
+    arr.sort()
+    
+    answer = 0
+    s = set(arr)
+    for num in arr:
+        if (x-num) in s:
+            if(num<x-num):
+                answer += 1
+            else:
+                break
+    out(str(answer))
+
+
+#2170 선긋기
+# x y 쌍을 오름차순 정렬
+# 겹치는것들을 겹쳐나감
+# 겹치지 않는 선이 생겼을 경우 기존의 선의 길이를 더한 뒤 시작점과 끝점을 재설정
+
+# 1. 단순히 리스트형태로 저장하여 정렬해도 해결가능
+
+# 2. 시작점:끝점의 키값 쌍으로 매핑한 뒤
+# 키 값만을 정렬하여 해결 가능하다
+# 정렬 대상이 튜플이 아닌 정수형이며
+# 같은 시작점을 가진 데이터가 하나로 합쳐지기 떄문에
+# 정렬 시간을 대폭 줄일 수 있다.
+def sol2170():
+    n = int(input())
+    lines = {}
+    for _ in range(n):
+        x, y = map(int, input().split())
+        try:
+            lines[x] = max(lines[x], y)
+        except:
+            lines[x] = y
+
+    l = sorted(lines.keys())
+    answer = 0
+    s = l[0]
+    e = lines[l[0]]
+    for x in l[1:]:
+        y = lines[x]
+        if(x > e):
+            answer += e-s
+            s = x
+        e = max(e, y)
+    answer += e-s
+    out(str(answer))
+
+
+#5635 생일
+def sol5635():
+    n = int(input())
+    stdt = [input().split() for _ in range(n)]
+    stdt = sorted(stdt, key=lambda x:(int(x[3]), int(x[2]), int(x[1])))
+    out('\n'.join((stdt[-1][0], stdt[0][0])))
