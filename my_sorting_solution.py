@@ -445,3 +445,140 @@ def sol5635():
     stdt = [input().split() for _ in range(n)]
     stdt = sorted(stdt, key=lambda x:(int(x[3]), int(x[2]), int(x[1])))
     out('\n'.join((stdt[-1][0], stdt[0][0])))
+
+
+#8983 사냥꾼
+# 각 동물마다 동물을 잡을 수 있는 사대를 탐색
+# 동물 최대수 N, 사대 최대수 M일 때
+# O(NlogM)의 성능
+def search(pos, target, l):
+    left = 0
+    right = len(pos)-1
+    while(left<=right):
+        m = (left+right)//2
+        if(target[1]-l <= pos[m]-target[0] <= l-target[1]):
+            return True
+        elif(pos[m]<target[0]):
+            left = m+1
+        else:
+            right = m-1
+    return False
+
+
+def sol8983():
+    m, n, l = map(int, input().split())
+    pos = sorted(list(map(int, input().split())))
+    target = sorted([tuple(map(int, input().split())) for _ in range(n)], key = lambda x:x[1])
+    
+    answer = 0
+    for t in target:
+        if(t[1]>l):
+            continue
+        if(search(pos, t, l)):
+            answer += 1
+    print(answer)
+
+
+#1377 버블 소트
+# 각 숫자의 정렬 이후의 위치가 
+# 기존 위치보다 뒤일 경우 1번의 순회가 필요
+# 기존 위치보다 전일 경우 기존 위치와의 차이만큼의 순회가 필요
+# 각 숫자가 제 위치로 가기 위해 필요한 순회 횟수중
+# 가장 큰 것을 찾는다
+def sol1377():
+    n = int(input())
+    arr = sorted([(int(input()), i) for i in range(n)])
+    
+    answer = 0
+    for i in range(n):
+        move = arr[i][1]-i
+        if(move<0):
+            move = 1
+        answer = max(answer, move)
+    print(answer+1)
+
+
+#2467 용액
+# 투포인터 응용문제
+# 수치를 정렬한 뒤
+# 좌측과 우측에서 값을 가져와 합을 구함
+def sol2467():
+    n = int(input())
+    lq = sorted(map(int, input().split()))
+    s = 0
+    e = n-1
+    sum_val = 2000000000
+    a, b = 0, 0
+    while s<e:
+        su = lq[s]+lq[e]
+        if(abs(su) < abs(sum_val)):
+            sum_val = su
+            a, b = lq[s], lq[e]
+        if(su<0):
+            s += 1
+        elif(su>0):
+            e -= 1
+        else:
+            break
+            
+    print(*sorted([a, b]))
+
+
+#2473 세 용액
+# 투포인터 응용문제
+# 수치 하나를 고른 뒤
+# 나머지 수치들중 두 수를 투포인터로 탐색
+# 합이 가장 작은 절댓값을 가지는 쌍을 구함
+# 합이 0일경우 탐색을 종료하고 바로 답을 출력
+def sol2473():
+    n = int(input())
+    lq = sorted(map(int, input().split()))
+    
+    answer = [[0, 0, 0], float('inf')]
+    for m in range(n-2):
+        a = lq[m]
+        s = m+1
+        e = n-1
+        check = False
+        while(s<e):
+            b, c = lq[s], lq[e]
+            su = a+b+c
+            if(abs(su)<answer[1]):
+                answer[1] = abs(su)
+                answer[0][0], answer[0][1], answer[0][2] = a, b, c
+            if(su<0):
+                s += 1
+            elif(su>0):
+                e -= 1
+            else:
+                check = True
+                break
+        if(check):
+            break
+                
+    print(*sorted(answer[0]))
+
+
+#11497 통나무 건너뛰기
+# 맨 앞과 맨 뒤의 값의 차이도 포함하여
+# 난이도를 최소화 해야함
+# 정렬의 방식을 조금 바꿔야함
+# 1 2 3 4 5  =>  1 3 5 4 2
+def sol11497():
+    for _ in range(int(input())):
+        n = int(input())
+        wood = sorted(map(int, input().split()))
+        arr = deque()
+        s = True
+        for w in wood:
+            if(s):
+                arr.appendleft(w)
+                s = not s
+            else:
+                arr.append(w)
+                s = not s
+                
+        level = 0
+        for i in range(n):
+            level = max(level, abs(arr[i]-arr[i-1]))
+        print(level)
