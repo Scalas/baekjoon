@@ -1,3 +1,3 @@
 import my_sorting_solution as sol
 
-sol.sol11497()
+sol.sol9237()

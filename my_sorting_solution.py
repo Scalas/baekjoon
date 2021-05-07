@@ -582,3 +582,257 @@ def sol11497():
         for i in range(n):
             level = max(level, abs(arr[i]-arr[i-1]))
         print(level)
+
+
+#1940 주몽
+# 더해서 특정 값이 되는 값의 쌍 탐색
+# 투포인터 활용문제
+def sol1940():
+    n = int(input())
+    m = int(input())
+    material = list(map(int, input().split()))
+    material.sort()
+    
+    s, e = 0, n-1
+    answer = 0
+    while(s<e):
+        val = material[s]+material[e]
+        if(val== m):
+            answer += 1
+            s += 1
+            e -= 1
+        elif(val<m):
+            s += 1
+        else:
+            e -= 1
+    print(answer)
+
+
+#2212 센서
+# 직선상의 좌표들을 정해진 갯수의 집중국으로 연결
+# 집중국의 수신범위의 합을 최소화
+# 집중국 갯수-1 만큼 좌표 사이를 끊어내는 방식으로 접근
+def sol2212():
+    n = int(input())
+    k = int(input())
+
+    if (n <= k):
+        print(0)
+    else:
+        sensors = sorted((map(int, input().split())))
+        answer = sensors[-1] - sensors[0]
+        links = [sensors[i+1]-sensors[i] for i in range(n - 1)]
+        links.sort()
+        for _ in range(k - 1):
+            answer -= links.pop()
+
+        print(answer)
+
+
+#2628 종이자르기
+# 가로 세로의 잘라진 길이들을 정렬
+# 가로 세로의 가장 큰 길이끼리 곱한 값
+def sol2628():
+    n, m = map(int, input().split())
+    k = int(input())
+
+    cuts = [[0], [0]]
+    for _ in range(k):
+        t, p = map(int, input().split())
+        cuts[t].append(p)
+    cuts[0].append(m)
+    cuts[1].append(n)
+    cuts[0].sort()
+    cuts[1].sort()
+
+    w = []
+    for i in range(1, len(cuts[0])):
+        w.append(cuts[0][i] - cuts[0][i - 1])
+
+    h = []
+    for i in range(1, len(cuts[1])):
+        h.append(cuts[1][i] - cuts[1][i - 1])
+
+    print(max(w) * max(h))
+
+
+#5800 성적 통계
+# 각 학급의 최대점수, 최소점수, 최대 인접점수간 차이를 각각 구함
+def sol5800():
+    k = int(input())
+    classes = [list(map(int, input().split()))[1:] for _ in range(k)]
+    answer = []
+    for idx, c in enumerate(classes):
+        c.sort()
+        gap = 0
+        for i in range(1, len(c)):
+            gap = max(gap, c[i]-c[i-1])
+        answer.append(f'Class {idx+1}')
+        answer.append(f'Max {c[-1]}, Min {c[0]}, Largest gap {gap}')
+    print('\n'.join(answer))
+
+
+#10800 컬러볼
+# 자신보다 작은 크기의 다른색깔 공만 잡을 수 있는 게임
+def sol10800():
+    n = int(input())
+    balls = [(i, *map(int, input().split())) for i in range(n)]
+    # 크기순, 색깔 순으로 정렬
+    balls.sort(key=lambda x: (x[2], x[1]))
+
+    # 모든 공의 크기의 합과 색깔별 크기의 합을 갱신
+    answer = [0] * n
+    ball_sum = 0
+    c_sums = [0] * n
+    pre = 0
+    for i, ball in enumerate(balls):
+        # 크기가 같은 공끼리 영향을 주지 않도록
+        # 같은 크기의 공들의 정보는 한번에 갱신
+        while (balls[pre][2] < ball[2]):
+            ball_sum += balls[pre][2]
+            c_sums[balls[pre][1] - 1] += balls[pre][2]
+            pre += 1
+        # 자신과 같은색의 공의 크기의 합을 전체의 합에서 뺀다
+        answer[ball[0]] = ball_sum - c_sums[ball[1] - 1]
+    print(*answer)
+
+
+#6996 애너그램
+# 정렬한 뒤 비교연산
+def sol6996():
+    answer = []
+    for _ in range(int(input())):
+        str1, str2 = input().split()
+        if (len(str1) != len(str2)):
+            answer.append(f'{str1} & {str2} are NOT anagrams.')
+            continue
+        s1 = [0] * 26
+        s2 = [0] * 26
+        for i in range(len(str1)):
+            s1[ord(str1[i]) - ord('a')] += 1
+            s2[ord(str2[i]) - ord('a')] += 1
+        if (s1 == s2):
+            answer.append(f'{str1} & {str2} are anagrams.')
+        else:
+            answer.append(f'{str1} & {str2} are NOT anagrams.')
+    print('\n'.join(answer))
+
+
+#8980 택배
+# 단방향으로 운행하는 트럭이 나를 수 있는 최대 박스 수 
+# 보내는 마을, 받는 마을 순으로 정렬
+# 적재할 자리가 부족할 때 단순히 남는 자리만큼 넣는것으로 처리하여 틀림
+# 넣으려는 박스보다 도착마을이 먼 박스를 버려야 정답
+# 트럭이 싣고있는 박스를 도착 위치별로 관리
+def sol8980():
+    n, c = map(int, input().split())
+    boxes = {}
+    for _ in range(int(input())):
+        s, e, num = map(int, input().split())
+        try:
+            boxes[s].append((e, num))
+        except:
+            boxes[s] = [(e, num)]
+
+    t = [0 for _ in range(n+1)]
+    cap = 0
+    answer = 0
+    for pos in range(1, n+1):
+        # 하차 처리
+        cap -= t[pos]
+        answer += t[pos]
+
+        # 승차 처리
+        try:
+            # 현재 위치에서 출발하는 상자를 최대한 적재
+            for box in sorted(boxes[pos]):
+                # 자리가 모자란 경우 적재하려는 짐보다 나중에 도착하는 짐 중 가장 도착이 늦는 짐을 버림
+                lack = max(cap+box[1]-c, 0)
+                for p in range(n, box[0], -1):
+                    if(lack == 0):
+                        break
+                    if(t[p]>0):
+                        d = min(t[p], lack)
+                        lack -= d
+                        cap -= d
+                        t[p] -= d
+                l = box[1]-lack
+                t[box[0]] += l
+                cap += l
+        except:
+            None
+    print(answer)
+
+
+#1092 배
+# 처음엔 박스 수를 크레인 수로 나누어 올림한 뒤
+# 각 크레인이 옮기는 박스 수가 그 수를 벗어나면 다음 크레인으로 박스를 옮기는 식으로 구현
+# 앞의 크레인과 분담 가능했던 박스도 뒤의 크레인이 부담해서 최솟값이 나오지 않는 문제 발생
+# 크레인이 순서대로 자신이 들 수 있는 가장 무거운 박스를 옮기는 것을 박스가 모두 사라질 때까지 반복하는 그리디 알고리즘이 정답
+
+# 번외: 걸리는 최소시간은 1분이며 최대시간은 박스 수 m분
+# 또한 시간이 t분 걸린다고 가정할 때
+# 각 크레인은 최대 t개의 박스만 옮겨야함
+# 이를 이용하여 걸리는 시간에 대한 이진탐색으로 매우 빠른속도로 해결 가능
+# 다음에는 이진탐색으로 다시 풀어볼것
+def sol1092():
+    n = int(input())
+    crane = sorted(list(map(int, input().split())), reverse=True)
+    m = int(input())
+    boxes = [0]*1000001
+    min_val, max_val, sum_val = 1000001, 0, 0
+    for i in map(int, input().split()):
+        boxes[i] += 1
+        min_val = min(min_val, i)
+        max_val = max(max_val, i)
+        sum_val += i
+    
+    if(crane[0]<max_val):
+        print(-1)
+        return
+    else:
+        time = 0
+        while(sum_val>0):
+            time += 1
+            for c in crane:
+                for i in range(c, min_val-1, -1):
+                    if(boxes[i]>0):
+                        boxes[i] -= 1
+                        sum_val -= i
+                        break 
+        print(time)      
+
+
+#15970 화살표 그리기
+# 색깔별 점의 좌표들을 오름차순 정렬
+# 각 점에서 가장 가까운 점과의 거리를 합산
+# 점의 색이 두 개보다 많을 수 있음을 유의
+def sol15970():
+    n = int(input())
+    arrows = {}
+    for _ in range(n):
+        p, c = map(int, input().split())
+        try:
+            arrows[c-1].append(p)
+        except:
+            arrows[c-1] = [p]
+    
+    answer = 0
+    for arrow in arrows.values():
+        arrow.sort()
+        if(len(arrow)<2):
+            continue
+        answer += arrow[1]-arrow[0]
+        answer += arrow[-1]-arrow[-2]
+        for i in range(1, len(arrow)-1):
+            answer += min(arrow[i]-arrow[i-1], arrow[i+1]-arrow[i])
+    print(answer)
+
+
+#9237 이장님 초대
+# 각 나무가 다 자랄것으로 예상되는 날짜의 최댓값
+def sol9237():
+    n = int(input())
+    trees = sorted(map(int, input().split()), reverse=True)
+ 
+    print(max(trees[i]+i+1 for i in range(n))+1)
